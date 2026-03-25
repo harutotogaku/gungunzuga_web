@@ -1,0 +1,47 @@
+name: Update Poster Gallery
+
+# 🤖 いつロボットを動かすか（トリガーの設定）
+on:
+  schedule:
+    # 毎日 日本時間の深夜0時（UTCの15時）に自動実行
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+    # GitHubの画面上から「今すぐ手動で更新！」ボタンを押せるようにする設定
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. サイトのデータをロボットの作業机に持ってくる
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Node.js（裏方のプログラムを動かす環境）を準備する
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. 必要な通信ツールなどをインストールする
+      - name: Install dependencies
+        run: npm install
+
+      # 4. GitHubの金庫（Secrets）から鍵を取り出し、credentials.json を作る
+      - name: Create credentials.json from secret
+        run: |
+          echo '${{ secrets.GDRIVE_CREDENTIALS }}' > credentials.json
+
+      # 5. あなたが作った裏方プログラムを実行し、Googleドライブから画像を取得！
+      - name: Fetch images from Google Drive
+        run: node fetch.js
+
+      # 6. 新しくできた data.json をGitHub上にセーブ（コミット＆プッシュ）する
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          # もし画像が増えていて data.json に変更があればセーブする
+          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 自動更新：ギャラリーにポスターを追加しました"
+          git push
