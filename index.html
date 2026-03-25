@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元頑図画</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ローダーオーバーレイ -->
+    <div id="loader-overlay">
+        <div class="dvd-text">元頑図画</div>
+    </div>
+
+    <header>
+        <img class="header-logo" src="scr/1_header_logo.png" alt="元頑図画">
+        <a class="header-link" href="https://shudan.notion.site/a" target="_blank" rel="noopener noreferrer">shudan→</a>
+    </header>
+
+    <section class="hero-spacer">
+        <div class="hero-stream" aria-hidden="true">
+            <div id="hero-stream-track" class="hero-stream-track"></div>
+        </div>
+        <a href="#gallery-section" class="scroll-gallery" aria-label="ギャラリーへ移動">
+            <img src="scr/ge.png" alt="ギャラリーへ移動">
+        </a>
+    </section>
+
+    <section id="gallery-section" class="gallery-section" aria-label="ギャラリー一覧">
+        <div class="gallery-section-header">
+            <div class="view-switch" role="group" aria-label="表示順の切り替え">
+                <button id="chronological-btn" class="switch-btn" type="button">newest</button>
+                <button id="random-btn" class="switch-btn" type="button"><span id="refresh-icon" class="refresh-icon">↻</span> random</button>
+            </div>
+        </div>
+        <!-- ここにJSでポスターが追加されていきます -->
+        <main id="gallery-grid" class="gallery-grid"></main>
+    </section>
+
+    <!-- モーダルポップアップ -->
+    <div id="modal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modal-img">
+        <div id="modal-caption"></div>
+    </div>
+
+    <footer id="site-footer" class="site-footer">
+        <img class="footer-logo" src="scr/2_footer_logo.png" alt="集団/shudan">
+        <a href="#" class="scroll-top" aria-label="ページトップへ">
+            <img src="scr/ue.png" alt="トップへ戻る">
+        </a>
+        <small class="footer-credit">© 集団/shudan</small>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
