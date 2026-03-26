@@ -2,6 +2,10 @@ const galleryGrid = document.getElementById('gallery-grid');
 const chronologicalBtn = document.getElementById('chronological-btn');
 const randomBtn = document.getElementById('random-btn');
 const heroStreamTrack = document.getElementById('hero-stream-track');
+const headerLogo = document.querySelector('.header-logo');
+const scrollGalleryLink = document.querySelector('.scroll-gallery');
+let heroStreamAnimationId = null;
+let heroStreamResizeTimer = null;
 
 // ローダー制御
 const loaderOverlay = document.getElementById('loader-overlay');
@@ -219,12 +223,84 @@ function createHeroStream(images) {
         const img = document.createElement('img');
         img.src = image.url;
         img.alt = '';
-        img.loading = 'lazy';
+        img.loading = 'eager';
+        img.decoding = 'async';
 
         item.appendChild(img);
         heroStreamTrack.appendChild(item);
     });
+
+    startHeroStreamAnimation();
 }
+
+function stopHeroStreamAnimation() {
+    if (heroStreamAnimationId !== null) {
+        cancelAnimationFrame(heroStreamAnimationId);
+        heroStreamAnimationId = null;
+    }
+}
+
+function startHeroStreamAnimation() {
+    if (!heroStreamTrack || heroStreamTrack.children.length === 0) {
+        return;
+    }
+
+    stopHeroStreamAnimation();
+
+    const distance = heroStreamTrack.scrollWidth / 2;
+    if (!distance) {
+        return;
+    }
+
+    const duration = window.innerWidth <= 520 ? 22000 : window.innerWidth <= 820 ? 25000 : 28000;
+    let startTimestamp = null;
+
+    const step = (timestamp) => {
+        if (startTimestamp === null) {
+            startTimestamp = timestamp;
+        }
+
+        const elapsed = (timestamp - startTimestamp) % duration;
+        const progress = elapsed / duration;
+        const x = -distance + distance * progress;
+
+        heroStreamTrack.style.transform = `translate3d(${x}px, 0, 0)`;
+        heroStreamAnimationId = requestAnimationFrame(step);
+    };
+
+    heroStreamAnimationId = requestAnimationFrame(step);
+}
+
+function scrollToGallery(event) {
+    const gallerySection = document.getElementById('gallery-section');
+    if (!gallerySection) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const logoHeight = headerLogo ? headerLogo.getBoundingClientRect().height : 0;
+    const offset = Math.max(logoHeight + 32, 96);
+    const top = gallerySection.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({
+        top,
+        behavior: 'smooth'
+    });
+}
+
+if (scrollGalleryLink) {
+    scrollGalleryLink.addEventListener('click', scrollToGallery);
+}
+
+window.addEventListener('resize', () => {
+    clearTimeout(heroStreamResizeTimer);
+    heroStreamResizeTimer = setTimeout(() => {
+        if (originalData.length) {
+            createHeroStream(originalData);
+        }
+    }, 150);
+});
 
 // データをループしてHTMLを作成する関数
 function renderGallery(images, animate = true) {

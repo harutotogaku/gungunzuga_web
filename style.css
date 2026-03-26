@@ -11,6 +11,12 @@ body {
     color: #121212;
 }
 
+:root {
+    --gallery-anchor-offset: 128px;
+    --hero-visible-height: calc(100svh - 92px);
+    --hero-bottom-space: 128px;
+}
+
 header {
     text-align: left;
     margin-bottom: 0;
@@ -101,14 +107,18 @@ header {
 
 .hero-spacer {
     position: relative;
-    min-height: calc(100svh - 92px);
+    min-height: var(--hero-visible-height);
+    height: var(--hero-visible-height);
+    padding-bottom: var(--hero-bottom-space);
+    box-sizing: border-box;
     overflow: hidden;
 }
 
 .hero-stream {
     position: absolute;
-    left: -20px;
-    right: -20px;
+    left: 0;
+    width: calc(100% + 40px);
+    margin-left: -20px;
     top: 50%;
     transform: translateY(-50%);
     overflow: hidden;
@@ -121,7 +131,7 @@ header {
     gap: 8px;
     width: max-content;
     will-change: transform;
-    animation: heroStreamRight 28s linear infinite;
+    transform: translate3d(0, 0, 0);
 }
 
 .hero-stream-item {
@@ -169,6 +179,7 @@ header {
 
 .gallery-section {
     padding: 0 0 96px;
+    scroll-margin-top: var(--gallery-anchor-offset);
 }
 
 .gallery-section-header {
@@ -324,6 +335,12 @@ header {
         padding: 16px;
     }
 
+    :root {
+        --gallery-anchor-offset: 116px;
+        --hero-visible-height: calc(100svh - 80px);
+        --hero-bottom-space: 108px;
+    }
+
     .header-logo {
         width: min(270px, 68vw);
         left: 16px;
@@ -336,13 +353,13 @@ header {
     }
 
     .hero-spacer {
-        min-height: auto;
-        height: 52vh;
+        min-height: var(--hero-visible-height);
+        height: var(--hero-visible-height);
     }
 
     .hero-stream {
-        left: -16px;
-        right: -16px;
+        width: calc(100% + 32px);
+        margin-left: -16px;
     }
 
     .hero-stream-track {
@@ -355,7 +372,7 @@ header {
     }
 
     .gallery-section {
-        padding-top: 0;
+        padding-top: 8px;
     }
 
     .gallery-section-header {
@@ -369,6 +386,12 @@ header {
 }
 
 @media (max-width: 520px) {
+    :root {
+        --gallery-anchor-offset: 104px;
+        --hero-visible-height: calc(100svh - 72px);
+        --hero-bottom-space: 96px;
+    }
+
     .view-switch {
         gap: 12px;
         width: 100%;
@@ -376,11 +399,8 @@ header {
     }
 
     .hero-spacer {
-        height: 46vh;
-    }
-
-    .hero-stream-track {
-        animation-duration: 22s;
+        min-height: var(--hero-visible-height);
+        height: var(--hero-visible-height);
     }
 
     .hero-stream-item {
